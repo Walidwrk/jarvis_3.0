@@ -43,7 +43,8 @@ def main() -> None:
     encoder.load_state_dict(torch.load("models/encoder_pretrained.pt"))
     for param in encoder.parameters():
         param.requires_grad = False
-    state_dim = encoder.gru.hidden_size + 2 + 2  # last hidden + vol + conf + extras
+    # forecast_state = last hidden (128) + volatility + confidence = 130 dims
+    state_dim = encoder.gru.hidden_size + 2  # last hidden + vol/conf
     agent = SACAgent(state_dim, 1, SACConfig(device=TrainingConfig.device))
 
     steps_per_episode = 800 if args.fast_debug else len(env)
